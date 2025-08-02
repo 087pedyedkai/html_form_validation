@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบฟอร์มตรวจสุขภาพ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Prompt', sans-serif; }
+        .medical-pattern {
+            background-color: #f0f9ff;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 0h2v20H9V0zm0 0h2v20H9V0zM0 9h20v2H0V9z' fill='%23e0f2fe' fill-opacity='0.48' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="medical-pattern min-h-screen py-12 px-4">
+    <div class="max-w-2xl mx-auto bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg p-8 border border-blue-100">
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-blue-100 rounded-full mx-auto flex items-center justify-center mb-4">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-light text-gray-800 mb-2">แบบฟอร์มตรวจสุขภาพ</h1>
+            <p class="text-gray-500">กรุณากรอกข้อมูลเพื่อคำนวณค่าดัชนีมวลกาย (BMI)</p>
+        </div>
+
+        <form id="healthForm" class="space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm text-gray-600 mb-2">อายุ (ปี)</label>
+                    <input type="number" id="age" required min="15" max="60"
+                        class="w-full px-4 py-3 rounded-lg bg-blue-50/50 border-0 focus:ring-2 focus:ring-blue-200"
+                        placeholder="15-60 ปี">
+                    <p id="ageError" class="text-rose-400 text-xs mt-1 hidden">อายุต้องอยู่ระหว่าง 15-60 ปี</p>
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-2">เพศ</label>
+                    <select id="sex" required class="w-full px-4 py-3 rounded-lg bg-blue-50/50 border-0 focus:ring-2 focus:ring-blue-200">
+                        <option value="">เลือกเพศ</option>
+                        <option value="male">ชาย</option>
+                        <option value="female">หญิง</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm text-gray-600 mb-2">ส่วนสูง (ซม.)</label>
+                    <input type="number" id="height" required min="1" step="0.1"
+                        class="w-full px-4 py-3 rounded-lg bg-blue-50/50 border-0 focus:ring-2 focus:ring-blue-200">
+                </div>
+                <div>
+                    <label class="block text-sm text-gray-600 mb-2">น้ำหนัก (กก.)</label>
+                    <input type="number" id="weight" required min="1" step="0.1"
+                        class="w-full px-4 py-3 rounded-lg bg-blue-50/50 border-0 focus:ring-2 focus:ring-blue-200">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm text-gray-600 mb-2">โรคประจำตัว</label>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" name="diseases" value="diabetes" class="rounded">
+                        <span>เบาหวาน</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" name="diseases" value="hypertension" class="rounded">
+                        <span>ความดันโลหิตสูง</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" name="diseases" value="heart" class="rounded">
+                        <span>โรคหัวใจ</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="otherDiseaseCheckbox" class="rounded">
+                        <span>โรคประจำตัวอื่นๆ</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="otherConditionsContainer" class="hidden transition-all duration-300 opacity-0">
+                <label class="block text-sm text-gray-600 mb-2">ระบุโรคประจำตัวอื่นๆ</label>
+                <textarea id="otherConditions" rows="3" 
+                    class="w-full px-4 py-2 rounded-lg bg-blue-50/50 border-0 focus:ring-2 focus:ring-blue-200"></textarea>
+            </div>
+
+            <button type="submit"
+                class="w-full py-3 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                คำนวณ BMI
+            </button>
+        </form>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="fixed inset-0 bg-black/20 hidden flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full opacity-0 transform scale-95 transition-all duration-200" id="modalContent">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-blue-100 rounded-full mx-auto flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-light mb-4">ผลการคำนวณค่า BMI</h3>
+                <div id="bmiResult" class="text-3xl font-semibold text-blue-600 mb-2"></div>
+                <div id="bmiCategory" class="text-gray-600 mb-6"></div>
+                <button onclick="closeModal()" 
+                    class="px-6 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors">
+                    ปิด
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="health-validation.js"></script>
+</body>
+</html>
